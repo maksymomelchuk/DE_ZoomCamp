@@ -1,0 +1,125 @@
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+docker run -it \
+  -e POSTGRES_USER=root \
+  -e POSTGRES_PASSWORD=root \
+  -e POSTGRES_DB="ny_taxi" \
+  -v e:/'study python'/github/de_zoomcamp/ny_taxi_postgres_data:/var/lib/postgresql/data \
+  -p 5431:5432 \
+  --network=pg-network \
+  --name pg-database \
+  postgres:13
+
+  pgcli -h localhost -p 5431 -u root -d ny_taxi
+
+docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+  --network=pg-network \
+  --name pgadmin-2 \
+  dpage/pgadmin4
+
+URL = "https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.parquet"
+
+python ingest_data.py \
+--user=root \
+--password=root \
+--host=localhost \
+--port=5431 \
+--db=ny_taxi \
+--table_name=yellow_taxi \
+--url=${URL}
+
+
+
+# df = pd.read_parquet("https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.parquet")
+
+
+# df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
+# df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
+
+# engine = create_engine('postgresql://root:root@localhost:5431/ny_taxi')
+# engine.connect()
+
+
+# print(pd.io.sql.get_schema(df, name='yellow_taxi_data', con=engine))
+
+# df.to_sql(name='yellow_taxi', con=engine, if_exists='replace')
+
+
+docker build -t taxi_ingest:v001 .
+
+
+
+docker run -it
+  --network=pg-network \
+ taxi_ingest:v001 \
+--user=root \
+--password=root \
+--host=localhost \
+--port=5431 \
+--db=ny_taxi \
+--table_name=yellow_taxi \
+--url="https://s3.amazonaws.com/nyc-tlc/trip+data/yellow_tripdata_2021-01.parquet"
+
+
+
+de-zoomcamp@dtc-de-course-350617.iam.gserviceaccount.com
+
+
+"E:/'Study Python'/GitHub/DE_ZoomCamp/dtc-de-course-350617-d07be33b51a8.json"
+
+gcloud auth application-default login
+
+
+gUjcim-pezfet-kyjzu4
+
+
+AIRFLOW_UID=50000
+echo -e "AIRFLOW_UID=50000" > .env
+echo -e "AIRFLOW_UID=$(50000 -u)" > .env
+
+
+C:\Users\omelc\AppData\Roaming\gcloud\application_default_credentials.json
+
+
+AWS password sijkof-gugpoj-6xizjY
+
+
+AWS access key
+ID     AKIA5JWRRN6CGCIK754C
+PASS   gCxjgN8p88Z3R+G7YfgMhUPpIqK/rwj5gXhAcI+E
+
+
+GCP SCOPES
+https://www.googleapis.com/auth/cloud-platform
+
+
+--remove-orphans flag
+
+
+
+
+URL_PREFIX = 'https://s3.amazonaws.com/nyc-tlc/trip+data'
+URL_TEMPLATE = URL_PREFIX + \
+    '/fhv_tripdata_{{ execution_date.strftime(\'%Y-%m\') }}.parquet'
+OUTPUT_FILE_TEMPLATE = AIRFLOW_HOME + \
+    '/output_{{ execution_date.strftime(\'%Y-%m\') }}'
+
+TABLE_NAME_TEMPLATE = "fhv_trip_{{ execution_date.strftime(\'%Y_%m\') }}"
+
+
