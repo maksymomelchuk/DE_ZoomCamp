@@ -14,7 +14,7 @@ from ingest_to_gcp import upload_to_gcp
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
-BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'yellow_taxi_2019_2020')
+BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'trip_data_all')
 
 # Definition of downloaded files
 
@@ -32,7 +32,7 @@ local_workflow = DAG(
     schedule_interval="0 6 2 * *",
     start_date=datetime(2019, 1, 1),
     end_date=datetime(2020, 12, 31),
-    max_active_runs=2
+    max_active_runs=3
 )
 
 
@@ -48,7 +48,7 @@ with local_workflow:
         python_callable=upload_to_gcp,
         op_kwargs={
             "bucket": BUCKET,
-            "object_name": f"{YEAR}/{OUTPUT_FILE_TEMPLATE}",
+            "object_name": f"yellow_taxi/{OUTPUT_FILE_TEMPLATE}",
             "local_file": f"{AIRFLOW_HOME}/{OUTPUT_FILE_TEMPLATE}",
         }
     )
@@ -59,11 +59,11 @@ with local_workflow:
             "tableReference": {
                 "projectId": PROJECT_ID,
                 "datasetId": BIGQUERY_DATASET,
-                "tableId": "external_table",
+                "tableId": "yellow_taxi",
             },
             "externalDataConfiguration": {
                 "sourceFormat": "PARQUET",
-                "sourceUris": [f"gs://{BUCKET}/{YEAR}//{OUTPUT_FILE_TEMPLATE}"],
+                "sourceUris": [f"gs://{BUCKET}/yellow_taxi/*"],
             },
         },
     )

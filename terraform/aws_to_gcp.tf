@@ -34,8 +34,8 @@ resource "google_storage_transfer_job" "s3-bucket-nightly-backup" {
     aws_s3_data_source {
       bucket_name = "nyc-tlc"
       aws_access_key {
-        access_key_id     = "AKIA5JWRRN6CGCIK754C"
-        secret_access_key = "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"
+        access_key_id     = ""
+        secret_access_key = ""
       }
     }
     gcs_data_sink {

@@ -14,7 +14,7 @@ from ingest_to_gcp import upload_to_gcp
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
-BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'green_taxi_2019_2020')
+BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'trip_data_all')
 
 # Definition of downloaded files
 
@@ -22,7 +22,7 @@ URL_PREFIX = 'https://nyc-tlc.s3.amazonaws.com/trip+data/'
 FILE_NAME = 'green_tripdata_'
 URL_TEMPLATE = URL_PREFIX + FILE_NAME + \
     '{{ execution_date.strftime("%Y-%m") }}.parquet'
-OUTPUT_FILE_TEMPLATE = 'yellow_taxi_{{ execution_date.strftime("%Y-%m") }}'
+OUTPUT_FILE_TEMPLATE = 'green_taxi_{{ execution_date.strftime("%Y-%m") }}'
 YEAR = '{{ execution_date.strftime("%Y") }}'
 
 
@@ -32,7 +32,7 @@ local_workflow = DAG(
     schedule_interval="0 6 2 * *",
     start_date=datetime(2019, 1, 1),
     end_date=datetime(2020, 12, 31),
-    max_active_runs=5
+    max_active_runs=3
 )
 
 
@@ -59,7 +59,7 @@ with local_workflow:
             "tableReference": {
                 "projectId": PROJECT_ID,
                 "datasetId": BIGQUERY_DATASET,
-                "tableId": "green_taxi_2019_2020",
+                "tableId": "green_taxi",
             },
             "externalDataConfiguration": {
                 "sourceFormat": "PARQUET",

@@ -17,7 +17,7 @@ from ingest_to_gcp import upload_to_gcp
 AIRFLOW_HOME = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
 BUCKET = os.environ.get("GCP_GCS_BUCKET")
-BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'zones')
+BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'trip_data_all')
 
 # Definition of downloaded files
 
@@ -82,11 +82,11 @@ with local_workflow:
             "tableReference": {
                 "projectId": PROJECT_ID,
                 "datasetId": BIGQUERY_DATASET,
-                "tableId": "external_table",
+                "tableId": "zones",
             },
             "externalDataConfiguration": {
                 "sourceFormat": "PARQUET",
-                "sourceUris": [f"gs://{BUCKET}/zones/{OUTPUT_FILE_TEMPLATE}"],
+                "sourceUris": [f"gs://{BUCKET}/zones/*"],
             },
         },
     )
